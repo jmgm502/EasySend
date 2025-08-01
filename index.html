@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>轻松互传 - 手机、电脑、平板...轻松互传</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- 头部导航 -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-paper-plane"></i>
+                <span>轻松互传</span>
+                <small>手机、电脑、平板...轻松互传</small>
+            </div>
+            <div class="user-actions">
+                <button class="btn-secondary">我的互传</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容区域 -->
+    <main class="main-content">
+        <div class="container">
+            <!-- 提取码接收区域 -->
+            <div class="receive-section">
+                <p class="receive-hint">点击添加轻松互传到桌面，访问更方便</p>
+                <div class="receive-form">
+                    <span class="receive-label">接收文件</span>
+                    <div class="input-group">
+                        <input type="text" id="extractCode" placeholder="输入取件码" class="extract-input">
+                        <button onclick="receiveFileEnhanced()" class="btn-primary">接收</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 传输控制面板 -->
+            <div id="transferControlPanel" class="transfer-control-panel" style="display: none;">
+                <div class="control-panel-header">
+                    <h3><i class="fas fa-exchange-alt"></i> 传输控制中心</h3>
+                    <button onclick="toggleControlPanel()" class="btn-close-panel">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="control-panel-content">
+                    <div class="active-transfers" id="activeTransfers">
+                        <!-- 活跃传输列表将在这里动态生成 -->
+                    </div>
+                    <div class="control-actions">
+                        <button onclick="disconnectAllTransfers()" class="btn-danger-large">
+                            <i class="fas fa-stop-circle"></i> 断开所有传送
+                        </button>
+                        <button onclick="showTransferHistory()" class="btn-info-large">
+                            <i class="fas fa-history"></i> 传输历史
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 传输选项卡 -->
+            <div class="transfer-tabs">
+                <button class="tab-btn active" data-tab="file">
+                    <i class="fas fa-file"></i>
+                    传文件
+                </button>
+                <button class="tab-btn" data-tab="text">
+                    <i class="fas fa-font"></i>
+                    传文本
+                </button>
+                <button class="tab-btn" data-tab="screen">
+                    <i class="fas fa-desktop"></i>
+                    传屏幕
+                </button>
+                <button class="tab-btn" data-tab="video">
+                    <i class="fas fa-video"></i>
+                    传视频
+                </button>
+            </div>
+
+            <!-- 传输内容区域 -->
+            <div class="transfer-content">
+                <!-- 文件传输 -->
+                <div class="tab-content active" id="file-tab">
+                    <div class="upload-area" id="fileUploadArea">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <p class="upload-text">点击添加文件 或 将文件（夹）拖放到这里（单次可发10个文件）</p>
+                        <input type="file" id="fileInput" multiple hidden>
+                        <div class="upload-actions">
+                            <button class="btn-outline" onclick="addMoreFiles(event)">添加文件</button>
+                            <button class="btn-outline" onclick="clearFiles(event)">清空</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 文本传输 -->
+                <div class="tab-content" id="text-tab">
+                    <div class="text-area">
+                        <textarea id="textContent" placeholder="输入要传输的文本内容..." rows="10"></textarea>
+                    </div>
+                </div>
+
+                <!-- 屏幕传输 -->
+                <div class="tab-content" id="screen-tab">
+                    <div class="screen-capture">
+                        <div class="capture-options">
+                            <button class="btn-outline" onclick="captureScreen()">
+                                <i class="fas fa-camera"></i>
+                                截取屏幕
+                            </button>
+                            <button class="btn-outline" onclick="captureWindow()">
+                                <i class="fas fa-window-maximize"></i>
+                                截取窗口
+                            </button>
+                        </div>
+                        <div id="screenPreview" class="screen-preview"></div>
+                    </div>
+                </div>
+
+                <!-- 视频传输 -->
+                <div class="tab-content" id="video-tab">
+                    <div class="video-area">
+                        <div class="video-upload" id="videoUploadArea">
+                            <div class="upload-icon">
+                                <i class="fas fa-video"></i>
+                            </div>
+                            <p class="upload-text">点击选择视频文件或拖放到这里</p>
+                            <input type="file" id="videoInput" accept="video/*" hidden>
+                            <button class="btn-outline" onclick="document.getElementById('videoInput').click();event.stopPropagation();">选择视频</button>
+                        </div>
+                        <div id="videoPreview" class="video-preview"></div>
+                    </div>
+                </div>
+
+                <!-- 文件限制信息 -->
+                <div class="file-limits">
+                    <p>在线文件单次不大于<strong>64T</strong>，离线储存，同步双互传送</p>
+                    <p>离线文件单次不大于<strong>10.0 GB</strong>，云端保存<strong>24小时</strong> + 10次下载，文件中转和异地传送</p>
+                </div>
+
+                <!-- 传输按钮 -->
+                <div class="transfer-actions">
+                    <button class="btn-primary-large" onclick="sendOnlineEnhanced()">发在线</button>
+                    <button class="btn-secondary-large vip" onclick="sendOffline()">
+                        发离线
+                        <span class="vip-badge">VIP</span>
+                    </button>
+                    <button class="btn-link" onclick="showRegion()">VIP（区别）</button>
+                    <button class="btn-control-panel" onclick="toggleControlPanel()">
+                        <i class="fas fa-cog"></i> 传输控制
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部信息 -->
+    <footer class="footer">
+        <div class="container">
+            <p>轻松互传© 2025-Now | <a href="#">帮助/反馈</a> <i class="fas fa-comment-dots"></i></p>
+            <p><a href="#">服务条款</a> | <a href="#">隐私服务</a></p>
+        </div>
+    </footer>
+
+    <!-- 模态框 -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- 进度条 -->
+    <div id="progressBar" class="progress-bar">
+        <div class="progress-fill"></div>
+        <span class="progress-text">0%</span>
+    </div>
+
+    <!-- Socket.IO客户端库 -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
