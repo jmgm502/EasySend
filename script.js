@@ -1626,7 +1626,7 @@ function handleTransferComplete(message) {
 
         // 延迟关闭进度界面
         setTimeout(() => {
-            hideReceiveProgress();
+            //hideReceiveProgress();
             if (currentTransfer && currentTransfer.fileName) {
                 showMessage(`文件 ${currentTransfer.fileName} 接收完成！`, 'success');
             } else {
@@ -1924,7 +1924,7 @@ function showReceiveProgress() {
                 <div id="receiveWaiting" class="loading-spinner" style="margin: 20px 0;"></div>
             </div>
             <div style="margin-top: 20px;">
-                <button onclick="cancelReceive()" class="btn-secondary" style="margin-right: 10px;">
+                <button onclick="cancelReceive()" class="btn-outline" style="margin-right: 10px;">
                     <i class="fas fa-times"></i> 停止接收
                 </button>
                 <button onclick="toggleControlPanel()" class="btn-outline">
@@ -2442,6 +2442,11 @@ function updateTransferStatus(transferId, status) {
         transfer.status = status;
 
         if (status === 'completed' || status === 'failed' || status === 'cancelled') {
+            transferHistory.forEach(fileData => {
+                if(transfer.id == fileData.id){
+                    fileData.completed = true;
+                }
+            })
             // 延迟移除已完成的传输
             setTimeout(() => {
                 activeTransfers.delete(transferId);
@@ -3132,7 +3137,7 @@ function showRegion() {
                     <h3 style="color: #e91e63; margin-bottom: 15px;">
                         <i class="fas fa-wifi"></i> 在线传输
                     </h3>
-                    <ul style="text-align: left; color: #666; line-height: 1.6;">
+                    <ul style="text-align: left; color: #666; line-height: 1.6;list-style: circle;margin-inline-start: 35px;">
                         <li>实时P2P传输</li>
                         <li>传输速度更快</li>
                         <li>无文件大小限制</li>
@@ -3144,7 +3149,7 @@ function showRegion() {
                     <h3 style="color: #4CAF50; margin-bottom: 15px;">
                         <i class="fas fa-cloud"></i> 离线传输 (VIP)
                     </h3>
-                    <ul style="text-align: left; color: #666; line-height: 1.6;">
+                    <ul style="text-align: left; color: #666; line-height: 1.6;list-style: circle;margin-inline-start: 35px;">
                         <li>云端中转存储</li>
                         <li>支持异地传输</li>
                         <li>24小时有效期</li>
