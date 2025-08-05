@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
     <!-- 头部导航 -->
     <header class="header">
@@ -37,46 +39,25 @@
                 </div>
             </div>
 
-            <!-- 传输控制面板 -->
-            <div id="transferControlPanel" class="transfer-control-panel" style="display: none;">
-                <div class="control-panel-header">
-                    <h3><i class="fas fa-exchange-alt"></i> 传输控制中心</h3>
-                    <button onclick="toggleControlPanel()" class="btn-close-panel">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="control-panel-content">
-                    <div class="active-transfers" id="activeTransfers">
-                        <!-- 活跃传输列表将在这里动态生成 -->
-                    </div>
-                    <div class="control-actions">
-                        <button onclick="disconnectAllTransfers()" class="btn-danger-large">
-                            <i class="fas fa-stop-circle"></i> 断开所有传送
-                        </button>
-                        <button onclick="showTransferHistory()" class="btn-info-large">
-                            <i class="fas fa-history"></i> 传输历史
-                        </button>
-                    </div>
-                </div>
-            </div>
+
 
             <!-- 传输选项卡 -->
             <div class="transfer-tabs">
                 <button class="tab-btn active" data-tab="file">
                     <i class="fas fa-file"></i>
-                    传文件
+                    <text class="tab-text">传文件</text>
                 </button>
                 <button class="tab-btn" data-tab="text">
                     <i class="fas fa-font"></i>
-                    传文本
+                    <text class="tab-text">传文本</text>
                 </button>
                 <button class="tab-btn" data-tab="screen">
                     <i class="fas fa-desktop"></i>
-                    传屏幕
+                    <text class="tab-text">传屏幕</text>
                 </button>
                 <button class="tab-btn" data-tab="video">
                     <i class="fas fa-video"></i>
-                    传视频
+                    <text class="tab-text">传视频</text>
                 </button>
             </div>
 
@@ -130,7 +111,8 @@
                             </div>
                             <p class="upload-text">点击选择视频文件或拖放到这里</p>
                             <input type="file" id="videoInput" accept="video/*" hidden>
-                            <button class="btn-outline" onclick="document.getElementById('videoInput').click();event.stopPropagation();">选择视频</button>
+                            <button class="btn-outline"
+                                onclick="document.getElementById('videoInput').click();event.stopPropagation();">选择视频</button>
                         </div>
                         <div id="videoPreview" class="video-preview"></div>
                     </div>
@@ -150,7 +132,7 @@
                         <span class="vip-badge">VIP</span>
                     </button>
                     <button class="btn-link" onclick="showRegion()">VIP（区别）</button>
-                    <button class="btn-control-panel" onclick="toggleControlPanel()">
+                    <button class="btn-control-panel" onclick="showControlPanelModal()">
                         <i class="fas fa-cog"></i> 传输控制
                     </button>
                 </div>
@@ -168,9 +150,16 @@
 
     <!-- 模态框 -->
     <div id="modal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content control-panel-modal">
             <span class="close">&times;</span>
             <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- 传输中心模态框 -->
+    <div id="centerModal" class="modal" style="z-index: 900;">
+        <div class="modal-content control-panel-modal">
+            <div id="centerModalBody"></div>
         </div>
     </div>
 
@@ -184,4 +173,5 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="script.js"></script>
 </body>
+
 </html>

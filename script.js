@@ -71,7 +71,7 @@ function initializeSocket() {
 
         socket.on('disconnect', () => {
             console.log('Socket连接断开');
-            showMessage('连接断开，请刷新页面重试', 'error');
+            //showMessage('连接断开，请刷新页面重试', 'error');
         });
     } catch (error) {
         console.error('Socket初始化失败:', error);
@@ -82,7 +82,7 @@ function initializeSocket() {
     socket.on('receiver-joined', async (data) => {
         console.log('接收方已加入房间:', data);
         if (waitingForReceiver && senderData) {
-            showMessage('接收方已连接，正在建立P2P连接...', 'info');
+            //showMessage('接收方已连接，正在建立P2P连接...', 'info');
             await startP2PConnection();
         }
     });
@@ -95,7 +95,7 @@ function initializeSocket() {
     // 加入房间成功
     socket.on('room-joined', (data) => {
         console.log('加入房间成功:', data);
-        showMessage('已连接到发送方，等待建立P2P连接...', 'info');
+        //showMessage('已连接到发送方，等待建立P2P连接...', 'info');
     });
 
     // WebRTC信令处理
@@ -117,7 +117,7 @@ function initializeSocket() {
     // 对方离开房间
     socket.on('peer-left', () => {
         console.log('对方已离开房间');
-        showMessage('对方已断开连接', 'error');
+        //showMessage('对方已断开连接', 'error');
         closePeerConnection();
         resetSenderState();
     });
@@ -132,7 +132,7 @@ function initializeSocket() {
     // 连接错误
     socket.on('connect_error', (error) => {
         console.error('Socket连接错误:', error);
-        showMessage('连接服务器失败，请检查网络连接', 'error');
+        //showMessage('连接服务器失败，请检查网络连接', 'error');
     });
 
     // 添加传输控制事件监听
@@ -165,7 +165,7 @@ async function createPeerConnection(roomId) {
         peerConnection.onconnectionstatechange = () => {
             console.log('连接状态:', peerConnection.connectionState);
             if (peerConnection.connectionState === 'connected') {
-                showMessage('P2P连接建立成功！', 'success');
+                //showMessage('P2P连接建立成功！', 'success');
 
                 // 更新传输控制中心的状态
                 updateTransferStatusByCode(currentTransferCode, 'connected');
@@ -174,10 +174,10 @@ async function createPeerConnection(roomId) {
                     setTimeout(startP2PTransfer, 500);
                 }
             } else if (peerConnection.connectionState === 'disconnected') {
-                showMessage('P2P连接已断开', 'error');
+                //showMessage('P2P连接已断开', 'error');
                 updateTransferStatusByCode(currentTransferCode, 'disconnected');
             } else if (peerConnection.connectionState === 'failed') {
-                showMessage('P2P连接失败，请重试', 'error');
+                //showMessage('P2P连接失败，请重试', 'error');
                 updateTransferStatusByCode(currentTransferCode, 'failed');
             }
         };
@@ -201,7 +201,7 @@ function setupDataChannel(channel) {
 
     dataChannel.onopen = () => {
         console.log('数据通道已打开');
-        showMessage('数据通道已建立，开始传输...', 'success');
+        //showMessage('数据通道已建立，开始传输...', 'success');
     };
 
     dataChannel.onclose = () => {
@@ -210,7 +210,7 @@ function setupDataChannel(channel) {
 
     dataChannel.onerror = (error) => {
         console.error('数据通道错误:', error);
-        showMessage('数据传输出现错误', 'error');
+        //showMessage('数据传输出现错误', 'error');
     };
 
     dataChannel.onmessage = (event) => {
@@ -447,13 +447,13 @@ function handleVideoSelect(e) {
 
 // 处理文件
 function handleFiles(files) {
-    if (files.length > 10) {
-        showMessage('单次最多只能上传10个文件', 'error');
+    if (files.length > 30) {
+        showMessage('单次最多只能上传50个文件', 'error');
         return;
     }
 
     files.forEach(file => {
-        if (uploadedFiles.length < 10) {
+        if (uploadedFiles.length < 30) {
             uploadedFiles.push({
                 id: 'file_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
                 file: file,
@@ -502,7 +502,7 @@ function updateFileList() {
             <div class="upload-icon">
                 <i class="fas fa-cloud-upload-alt"></i>
             </div>
-            <p class="upload-text">点击添加文件 或 将文件（夹）拖放到这里（单次可发10个文件）</p>
+            <p class="upload-text">点击添加文件 或 将文件（夹）拖放到这里（单次可发30个文件）</p>
             <div class="upload-actions">
                 <button class="btn-outline" onclick="addMoreFiles(event)">添加文件</button>
                 <button class="btn-outline" onclick="clearFiles(event)">清空</button>
@@ -933,7 +933,7 @@ async function receiveFile() {
 
                 if (result.success) {
                     updateReceiveStatus('文件信息获取成功');
-                    handleOfflineReceive(result.data, code);
+                    handleOfflineReceive(result.data, code, transferId);
                 } else {
                     throw new Error(result.message);
                 }
@@ -983,7 +983,7 @@ async function receiveFile() {
 }
 
 // 处理离线接收
-function handleOfflineReceive(data, code) {
+function handleOfflineReceive(data, code, transferId = null) {
     try {
         updateReceiveStatus('文件信息获取成功');
 
@@ -997,7 +997,7 @@ function handleOfflineReceive(data, code) {
                         <i class="fas fa-download"></i>
                     </div>
                     <h2 style="color: #4CAF50; margin-bottom: 20px;">文件接收成功</h2>
-                    <div style="background: #f0f8ff; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                    <div style="background: #f0f8ff; padding: 2px; border-radius: 8px; margin: 20px 0;">
                         <p style="font-size: 16px; margin-bottom: 15px;">共 ${data.files.length} 个文件：</p>
                         <div style="max-height: 300px; overflow-y: auto;">
             `;
@@ -1229,7 +1229,7 @@ function showDownloadProgress(files, transferId) {
                     <i class="fas fa-times"></i> 取消下载
                 </button>
                 ` : ''}
-                <button onclick="toggleControlPanel()" class="btn-outline">
+                <button onclick="showControlPanelModal()" class="btn-outline">
                     <i class="fas fa-cog"></i> 传输控制
                 </button>
             </div>
@@ -1927,7 +1927,7 @@ function showReceiveProgress() {
                 <button onclick="cancelReceive()" class="btn-outline" style="margin-right: 10px;">
                     <i class="fas fa-times"></i> 停止接收
                 </button>
-                <button onclick="toggleControlPanel()" class="btn-outline">
+                <button onclick="showControlPanelModal()" class="btn-outline">
                     <i class="fas fa-cog"></i> 传输控制
                 </button>
             </div>
@@ -2055,6 +2055,13 @@ function initializeModal() {
         });
     }
 }
+// 显示模态框
+function showCenterModal() {
+    const modal = document.getElementById('centerModal');
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+}
 
 // 显示模态框
 function showModal() {
@@ -2064,11 +2071,27 @@ function showModal() {
     }
 }
 
+// 关闭传输模态框
+function closeCenterModal() {
+    const modal = document.getElementById('centerModal');
+    if (modal) {
+        modal.style.display = 'none';
+        // 如果关闭的是传输控制面板，重置状态
+        if (transferControlPanelVisible) {
+            transferControlPanelVisible = false;
+        }
+    }
+}
+
 // 关闭模态框
 function closeModal() {
     const modal = document.getElementById('modal');
     if (modal) {
         modal.style.display = 'none';
+        // 如果关闭的是传输控制面板，重置状态
+        if (transferControlPanelVisible) {
+            transferControlPanelVisible = false;
+        }
     }
 }
 
@@ -2227,23 +2250,43 @@ function checkBrowserSupport() {
 
 // ==================== 传输控制功能 ====================
 
-// 切换传输控制面板显示/隐藏
+// 显示传输控制面板弹窗
+function showControlPanelModal() {
+    const modalBody = document.getElementById('centerModalBody');
+    modalBody.innerHTML = `
+        <div class="control-panel-header">
+            <h3><i class="fas fa-exchange-alt"></i> 传输控制中心</h3>
+            <button onclick="closeCenterModal()" class="btn-close-panel">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="control-panel-content">
+            <div class="active-transfers" id="activeTransfers">
+                <!-- 活跃传输列表将在这里动态生成 -->
+            </div>
+            <div class="control-actions">
+                <button onclick="disconnectAllTransfers()" class="btn-danger-large">
+                    <i class="fas fa-stop-circle"></i> 断开所有传送
+                </button>
+                <button onclick="showTransferHistory()" class="btn-info-large">
+                    <i class="fas fa-history"></i> 传输历史
+                </button>
+            </div>
+        </div>
+    `;
+
+    transferControlPanelVisible = true;
+    updateActiveTransfersList();
+    showCenterModal();
+}
+
+// 切换传输控制面板显示/隐藏（保持兼容性）
 function toggleControlPanel() {
-    const panel = document.getElementById('transferControlPanel');
-    if (!panel) return;
-
-    transferControlPanelVisible = !transferControlPanelVisible;
-
     if (transferControlPanelVisible) {
-        panel.style.display = 'block';
-        updateActiveTransfersList();
-        // 添加动画效果
-        setTimeout(() => {
-            panel.classList.add('fade-in');
-        }, 10);
+        closeModal();
+        transferControlPanelVisible = false;
     } else {
-        panel.style.display = 'none';
-        panel.classList.remove('fade-in');
+        showControlPanelModal();
     }
 }
 
@@ -2443,7 +2486,7 @@ function updateTransferStatus(transferId, status) {
 
         if (status === 'completed' || status === 'failed' || status === 'cancelled') {
             transferHistory.forEach(fileData => {
-                if(transfer.id == fileData.id){
+                if (transfer.id == fileData.id) {
                     fileData.completed = true;
                 }
             })
@@ -2592,7 +2635,7 @@ function disconnectAllTransfers() {
 // 保存传输到历史记录
 function saveTransferToHistory(transferInfo) {
     const historyItem = {
-        id: Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+        id: Date.now() + '_' + Math.random().toString(36).slice(2, 11),
         ...transferInfo,
         timestamp: new Date().toISOString(),
         completed: false
@@ -2718,7 +2761,7 @@ async function sendOnlineEnhanced() {
     try {
         // 生成传输码
         const transferCode = generateTransferCode();
-        const transferId = 'transfer_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        const transferId = 'transfer_' + Date.now() + '_' + Math.random().toString(36).slice(2, 11);
 
         currentTransferCode = transferCode;
         senderData = data;
@@ -2775,7 +2818,7 @@ async function receiveFileEnhanced() {
     }
 
     // 生成传输ID
-    const transferId = 'receive_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    const transferId = 'receive_' + Date.now() + '_' + Math.random().toString(36).slice(2, 11);
 
     // 显示接收进度界面
     showReceiveProgress();
@@ -2835,7 +2878,7 @@ async function handleOfflineTransfer(code, transferId) {
         if (result.success) {
             updateReceiveStatus('文件信息获取成功');
             updateTransferStatus(transferId, 'completed');
-            handleOfflineReceive(result.data, code);
+            handleOfflineReceive(result.data, code, transferId);
         } else {
             throw new Error(result.message);
         }
@@ -3127,7 +3170,7 @@ function initializeModal() {
 function showRegion() {
     const modalBody = document.getElementById('modalBody');
     modalBody.innerHTML = `
-        <div style="text-align: center;">
+        <div style="text-align: center;margin: 30px;">
             <h2 style="color: #4A90E2; margin-bottom: 20px;">
                 <i class="fas fa-crown" style="color: #ffd700;"></i>
                 VIP功能区别
@@ -3188,9 +3231,6 @@ document.addEventListener('DOMContentLoaded', function () {
         // ESC 关闭模态框
         if (e.key === 'Escape') {
             closeModal();
-            if (transferControlPanelVisible) {
-                toggleControlPanel();
-            }
         }
     });
 

@@ -129,11 +129,12 @@ body {
     background: #4A90E2;
     color: white;
     border: none;
-    padding: 8px 16px;
+    padding: 8px;
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
     transition: all 0.3s ease;
+    width: 90px;
 }
 
 .btn-primary:hover {
@@ -629,15 +630,19 @@ body {
     }
     
     .logo {
-        flex-direction: column;
+        flex-direction: row;
         text-align: center;
     }
     
     .logo small {
-        margin-left: 0;
+        margin-left: 5px;
         margin-top: 5px;
     }
     
+    .receive-hint {
+        display: none;
+    }
+
     .receive-form {
         flex-direction: column;
         gap: 10px;
@@ -649,9 +654,13 @@ body {
     }
     
     .transfer-tabs {
-        flex-direction: column;
+        flex-direction: row;
     }
     
+    .transfer-tabs .tab-text{
+        display: none;
+    }
+
     .transfer-content {
         padding: 20px;
     }
@@ -661,22 +670,22 @@ body {
     }
     
     .transfer-actions {
-        flex-direction: column;
+        flex-direction: row;
         align-items: stretch;
     }
     
-    .btn-primary-large,
+    /* .btn-primary-large,
     .btn-secondary-large {
         width: 100%;
-    }
+    } */
     
     .capture-options {
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
     }
     
     .upload-actions {
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
     }
     
@@ -829,56 +838,60 @@ body {
     }
 }
 
-/* 传输控制面板样式 */
-.transfer-control-panel {
+/* 传输控制面板弹窗样式 */
+.control-panel-modal {
     background: white;
     border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-    margin: 20px 0;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
     overflow: hidden;
-    border: 1px solid #e0e0e0;
-    animation: slideDown 0.3s ease-out;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
 }
 
 .control-panel-header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    padding: 20px;
+    padding: 25px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .control-panel-header h3 {
     margin: 0;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 600;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
 }
 
 .btn-close-panel {
     background: rgba(255, 255, 255, 0.2);
     border: none;
     color: white;
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
+    font-size: 18px;
 }
 
 .btn-close-panel:hover {
     background: rgba(255, 255, 255, 0.3);
-    transform: rotate(90deg);
+    transform: scale(1.1);
 }
 
 .control-panel-content {
-    padding: 20px;
+    padding: 25px;
+    max-height: 60vh;
+    overflow-y: auto;
 }
 
 .active-transfers {
@@ -1155,7 +1168,7 @@ body {
 /* 空状态样式 */
 .empty-transfers {
     text-align: center;
-    padding: 40px 20px;
+    padding: 120px 20px;
     color: #666;
 }
 
@@ -1209,6 +1222,7 @@ body {
     flex-direction: column;
     height: 100%;
     max-height: 70vh;
+    margin: 35px;
 }
 
 .history-header-fixed {
@@ -1261,6 +1275,7 @@ body {
 .modal-content {
     max-height: 80vh;
     overflow: hidden; /* 防止整个模态框滚动 */
+    padding: 0;
 }
 
 .history-item {
@@ -1310,17 +1325,23 @@ body {
 
 /* 响应式设计增强 */
 @media (max-width: 768px) {
-    .transfer-control-panel {
-        margin: 15px -15px;
-        border-radius: 0;
+    .control-panel-modal {
+        width: 95%;
+        max-height: 90vh;
+        margin: 10px;
     }
     
     .control-panel-header {
-        padding: 15px;
+        padding: 20px;
+    }
+    
+    .control-panel-header h3 {
+        font-size: 18px;
     }
     
     .control-panel-content {
-        padding: 15px;
+        padding: 20px;
+        max-height: 70vh;
     }
     
     .transfer-item {
@@ -1331,16 +1352,16 @@ body {
     
     .transfer-actions {
         align-self: stretch;
-        justify-content: flex-end;
+        justify-content: center;
     }
     
     .control-actions {
-        flex-direction: column;
+        flex-direction: row;
     }
     
     .btn-danger-large,
     .btn-info-large {
-        width: 100%;
+        /* width: 100%; */
         justify-content: center;
     }
     
@@ -1351,7 +1372,8 @@ body {
     
     /* 传输历史移动端适配 */
     .history-modal {
-        max-height: 60vh;
+        max-height: 75vh;
+        margin: 15px;
     }
     
     .history-header-fixed h2 {
@@ -1386,7 +1408,7 @@ body {
     }
     
     .history-footer-fixed button {
-        width: 100%;
+        /* width: 100%; */
         margin: 5px 0 !important;
     }
 }
