@@ -1122,7 +1122,7 @@ body {
     color: white;
     border: none;
     padding: 8px 15px;
-    border-radius: 6px;
+    border-radius: 4px;
     cursor: pointer;
     font-size: 13px;
     font-weight: 500;
@@ -1130,7 +1130,6 @@ body {
     display: flex;
     align-items: center;
     gap: 6px;
-    margin-left: 10px;
 }
 
 .btn-control-panel:hover {
@@ -1168,7 +1167,7 @@ body {
 /* 空状态样式 */
 .empty-transfers {
     text-align: center;
-    padding: 120px 20px;
+    padding: 60px 20px;
     color: #666;
 }
 
